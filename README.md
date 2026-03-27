@@ -1,7 +1,8 @@
 # The Weekly Till — Newsletter Landing Page
 
-<img width="1624" height="949" alt="image" src="https://github.com/user-attachments/assets/b2a4f014-a1fb-425b-8ed6-14e5b6bc886d" />
+**Live:** [newsletter-landing-page-zeta.vercel.app](https://newsletter-landing-page-zeta.vercel.app)
 
+<img width="1624" height="949" alt="image" src="https://github.com/user-attachments/assets/b2a4f014-a1fb-425b-8ed6-14e5b6bc886d" />
 
 A signup landing page for **The Weekly Till**, a newsletter for local business owners about workflow automation.
 
