@@ -1,6 +1,6 @@
 # The Weekly Till — Newsletter Landing Page
 
-<img width="1047" height="946" alt="image" src="https://github.com/user-attachments/assets/238e7425-cfd1-48db-a220-b90465c5d41e" />
+<img width="1624" height="949" alt="image" src="https://github.com/user-attachments/assets/b2a4f014-a1fb-425b-8ed6-14e5b6bc886d" />
 
 
 A signup landing page for **The Weekly Till**, a newsletter for local business owners about workflow automation.
