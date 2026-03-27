@@ -1,5 +1,7 @@
 # The Weekly Till — Newsletter Landing Page
 
+<img width="1855" height="972" alt="image" src="https://github.com/user-attachments/assets/f09233ff-4462-4ab0-bb16-9a6e9013d559" />
+
 A signup landing page for **The Weekly Till**, a newsletter for local business owners about workflow automation.
 
 Built with React + Vite + TypeScript. Sends form submissions to a Zapier webhook.
