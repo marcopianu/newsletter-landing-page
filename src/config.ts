@@ -1,140 +1,139 @@
-// ============================================
-// 🎨 NEWSLETTER CONFIGURATION
-// ============================================
-// Edit this file to customize your newsletter landing page!
-// No coding experience needed - just change the values below.
-
-// ============================================
-// 📝 CONTENT - Change your text here
-// ============================================
 export const content = {
-  // Logo & Branding
-  logoIcon: "◈",
-  logoText: "Newsletter",
+  // Logo
+  logoText: "The Weekly Till",
 
-  // Badge above headline
-  badgeText: "Join 1,000 subscribers",
+  // Badge
+  badgeText: "3,400 local business owners read this every Tuesday",
 
-  // Main headline (the accent part gets the gradient color)
-  headlineStart: "Stay ahead with",
-  headlineAccent: " insights that matter",
+// Headline — line 1 is normal, line 2 is italic terracotta
+headlineStart: "Fix the workflow draining your time.",
+headlineAccent: "Your first plan arrives immediately.",
 
-  // Description below headline
-  subheadline:
-    "Get exclusive content, industry trends, and actionable strategies delivered to your inbox every week. No spam, just value.",
+// Subheadline
+subheadline:
+  "Choose your business type and the task costing the most hours. We will send one practical setup you can use right away. After that, you will get one short Tuesday email with ideas for the same area.",
 
-  // Button text
-  buttonText: "Subscribe Now",
-  buttonLoadingText: "Subscribing...",
+// Button
+buttonText: "Send my automation blueprint",
+buttonLoadingText: "Sending...",
 
-  // Success message after subscribing
-  successTitle: "You're on the list!",
-  successMessage:
-    "Thanks for subscribing. We'll send you our best content straight to your inbox.",
+// Success page
+successTitle: "Your blueprint is on the way!",
+successMessage:
+  "Check your inbox.",
 
-  // Footer
-  footerText: "© 2025 Newsletter. All rights reserved.",
-  privacyNote: "By subscribing, you agree to our Privacy Policy. Unsubscribe anytime.",
+// Footer
+footerText: "© 2026 The Weekly Till. Built for owners who want their time back.",
 
-  // Features section
-  features: [
-    {
-      icon: "🤖",
-      title: "AI News",
-      description: "Latest AI trends and updates",
-    },
-    {
-      icon: "☕",
-      title: "I Love Coffee",
-      description: "Fueled by caffeine",
-    },
-    {
-      icon: "👍",
-      title: "Make sure to leave like",
-      description: "Support the content",
-    },
-  ],
+  // Fine print below button
+  privacyNote: "Free. Sent every Tuesday. Unsubscribe anytime.",
+
+  // Dropdown placeholder strings (used for validation)
+  businessTypePlaceholder: "Select type of business",
+  painPointPlaceholder: "Select bottleneck",
+  sourcePlaceholder: "How did you hear about us?",
 };
 
+export const testimonials = [
+  {
+    quote:
+      "I saved $340 last month just from the scheduling tip in issue #12.",
+    name: "Rosa M.",
+    role: "Salon owner",
+    city: "Austin TX",
+  },
+  {
+    quote:
+      "Finally a newsletter that doesn't assume I have an IT department.",
+    name: "James K.",
+    role: "Restaurant owner",
+    city: "Chicago IL",
+  },
+  {
+    quote:
+      "Forwarded the hiring script to my manager. We filled the position in 4 days.",
+    name: "Priya S.",
+    role: "Clinic admin",
+    city: "Miami FL",
+  },
+];
+
 // ============================================
-// 📋 REFERRAL SOURCES - Where users found you
+// DROPDOWN OPTIONS
 // ============================================
-// Add or remove options from this list
+export const businessTypes = [
+  "Select type of business",
+  // Food & Drink
+  "Restaurant",
+  "Café",
+  "Bar",
+  "Bakery",
+  "Food Truck",
+  "QSR (Quick Service Restaurant)",
+  // Beauty & Wellness
+  "Hair Salon",
+  "Barbershop",
+  "Spa",
+  "Nail Studio",
+  "Medspa",
+  // Healthcare
+  "Dental Clinic",
+  "GP (General Practice)",
+  "Physio",
+  "Specialist Clinic",
+  "Wellness Clinic",
+  // Retail
+  "Boutique",
+  "Gift Shop",
+  "Repair Shop",
+  "Pharmacy",
+  "Storefront Retail",
+  // Other / Professional Services
+  "Consultancy",
+  "Workshop",
+  "Service Business",
+  "Professional Practice",
+  "Other"
+];
+
+export const painPoints = [
+  "Select bottleneck",
+  "Staff scheduling",
+  "Cash flow gaps",
+  "Hiring",
+  "Data entry",
+  "Customer follow-ups",
+  "Inventory tracking",
+  "Client reminders",
+  "Payroll prep",
+];
+
 export const referralSources = [
   "Select an option",
   "Google Search",
-  "YouTube",
-  "Twitter / X",
+  "Instagram",
   "LinkedIn",
-  "Friend or Colleague",
-  "Podcast",
-  "Newsletter",
-  "Blog Article",
+  "Friend or colleague",
+  "YouTube",
   "Other",
 ];
 
 // ============================================
-// 🎨 COLORS - Customize your theme
+// WEBHOOK PAYLOAD
 // ============================================
-// These colors will automatically update your entire site!
-// Use hex colors like "#ff0000" or rgb like "rgb(255, 0, 0)"
-export const colors = {
-  // Background colors
-  bgPrimary: "#0a0a0b",      // Main background (darkest)
-  bgSecondary: "#111113",    // Card/input background
-  bgTertiary: "#1a1a1d",     // Badge/hover background
-
-  // Accent colors (your brand color!)
-  accentPrimary: "#a855f7",   // Main accent (purple)
-  accentSecondary: "#c084fc", // Lighter accent for gradients
-
-  // Text colors
-  textPrimary: "#fafafa",    // Main text (brightest)
-  textSecondary: "#a1a1aa",  // Subheadline text
-  textMuted: "#71717a",      // Placeholder/footer text
-
-  // Other colors
-  borderColor: "#27272a",    // Border/divider color
-  success: "#22c55e",        // Success green
-  error: "#ef4444",          // Error red
-};
-
-// ============================================
-// 🔤 FONTS - Change your typography
-// ============================================
-// Google Fonts are already set up! Just change the names here.
-// Find fonts at: https://fonts.google.com
-export const fonts = {
-  // Heading font (used for headlines, buttons, logo)
-  heading: "'Orbitron', sans-serif",
-
-  // Body font (used for paragraphs, inputs, labels)
-  body: "'Rajdhani', sans-serif",
-};
-
-// ============================================
-// 📤 WEBHOOK PAYLOAD - Data sent to Zapier
-// ============================================
-// This function creates the data sent to your Zapier webhook.
-// Add more fields here to collect additional data!
-//
-// EXAMPLE: To add a "name" field:
-// 1. Add a name input field in App.tsx (see README)
-// 2. Pass the name value to this function
-// 3. Add it to the return object below
-//
 export const createWebhookPayload = (data: {
   email: string;
   phone: string;
+  business_type: string;
+  pain_point: string;
   source: string;
 }) => {
   return {
-    // Required fields
     email: data.email,
     phone: data.phone,
+    business_type: data.business_type,
+    pain_point: data.pain_point,
     source: data.source,
-
-    // Automatic fields (you can remove these if not needed)
     timestamp: new Date().toISOString(),
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
   };
