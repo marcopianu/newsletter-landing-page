@@ -9,33 +9,16 @@ import {
   createWebhookPayload,
 } from './config';
 
-const ArrowRight = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
-
-const ChevronDown = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
-
 const WorkflowConnectors = () => (
   <svg className="workflow-connectors" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    {/* Path 1: top-left cluster → bottom-right */}
     <path id="p1" d="M 80 180 C 260 320, 680 420, 1100 720" stroke="#C4623A" strokeWidth="1.2" strokeDasharray="6 10" fill="none" opacity="0.18" />
     <circle r="3.5" fill="#C4623A" opacity="0.55">
       <animateMotion dur="9s" repeatCount="indefinite"><mpath href="#p1" /></animateMotion>
     </circle>
-
-    {/* Path 2: bottom-left → top-right */}
     <path id="p2" d="M 220 820 C 480 600, 900 320, 1360 100" stroke="#A04828" strokeWidth="1" strokeDasharray="4 12" fill="none" opacity="0.14" />
     <circle r="2.8" fill="#D4724A" opacity="0.5">
       <animateMotion dur="13s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear"><mpath href="#p2" /></animateMotion>
     </circle>
-
-    {/* Path 3: mid-left → mid-right, gentle S-curve */}
     <path id="p3" d="M 0 480 C 200 300, 600 650, 900 400 S 1200 200, 1440 460" stroke="#C4623A" strokeWidth="1" strokeDasharray="3 14" fill="none" opacity="0.12" />
     <circle r="3" fill="#E0844A" opacity="0.48">
       <animateMotion dur="17s" repeatCount="indefinite"><mpath href="#p3" /></animateMotion>
@@ -43,20 +26,14 @@ const WorkflowConnectors = () => (
     <circle r="2" fill="#C4623A" opacity="0.35">
       <animateMotion dur="17s" begin="8.5s" repeatCount="indefinite"><mpath href="#p3" /></animateMotion>
     </circle>
-
-    {/* Path 4: top-right → bottom-left arc */}
     <path id="p4" d="M 1300 80 C 1100 250, 800 500, 500 580 C 300 640, 150 700, 60 820" stroke="#B05830" strokeWidth="1.1" strokeDasharray="5 11" fill="none" opacity="0.13" />
     <circle r="3.2" fill="#C4623A" opacity="0.45">
       <animateMotion dur="11s" repeatCount="indefinite"><mpath href="#p4" /></animateMotion>
     </circle>
-
-    {/* Path 5: short connector, upper-center area */}
     <path id="p5" d="M 520 60 C 620 140, 780 100, 920 180" stroke="#D4845A" strokeWidth="0.9" strokeDasharray="3 9" fill="none" opacity="0.16" />
     <circle r="2.2" fill="#D4845A" opacity="0.6">
       <animateMotion dur="6s" repeatCount="indefinite"><mpath href="#p5" /></animateMotion>
     </circle>
-
-    {/* Path 6: lower portion diagonal */}
     <path id="p6" d="M 180 750 C 420 680, 700 780, 980 660 C 1150 600, 1280 650, 1400 720" stroke="#A84828" strokeWidth="1" strokeDasharray="4 13" fill="none" opacity="0.11" />
     <circle r="2.6" fill="#C4623A" opacity="0.42">
       <animateMotion dur="15s" repeatCount="indefinite"><mpath href="#p6" /></animateMotion>
@@ -74,243 +51,230 @@ function App() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState('');
 
-  const validateEmail = (value: string) =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  const validateEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  const validatePhone = (v: string) => v.replace(/\D/g, '').length >= 7;
+
+  const showError = (msg: string) => {
+    setError(msg);
+    setTimeout(() => setError(''), 4000);
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError('');
 
-    if (!email) { setError('Please enter your Email'); return; }
-    if (!validateEmail(email)) { setError('Please enter a valid email address'); return; }
-    if (!businessType || businessType === content.businessTypePlaceholder) {
-      setError('Please select your business type'); return;
-    }
-    if (!painPoint || painPoint === content.painPointPlaceholder) {
-      setError('Please select your biggest time cost'); return;
-    }
-    if (!source || source === content.sourcePlaceholder) {
-      setError('Please tell us where you found us'); return;
-    }
+    if (!email) { showError('Please enter your email address'); return; }
+    if (!validateEmail(email)) { showError('Please enter a valid email address'); return; }
+    if (!phone) { showError('Please enter your phone number'); return; }
+    if (!validatePhone(phone)) { showError('Phone must have at least 7 digits'); return; }
+    if (!businessType) { showError('Please select your business type'); return; }
+    if (!painPoint) { showError('Please select your biggest time cost'); return; }
+    if (!source) { showError('Please tell us where you found us'); return; }
 
     setIsSubmitting(true);
     try {
-      const payload = createWebhookPayload({
-        email, phone,
-        business_type: businessType,
-        pain_point: painPoint,
-        source,
-      });
-
+      const payload = createWebhookPayload({ email, phone, business_type: businessType, pain_point: painPoint, source });
       const response = await fetch('/api/lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      if (!response.ok) throw new Error('Failed to subscribe');
+      if (!response.ok) throw new Error('Failed');
       setIsSubmitted(true);
     } catch (err) {
-      console.error('Submission error:', err);
-      setError('Something went wrong. Please try again.');
+      console.error(err);
+      showError('Something went wrong. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (isSubmitted) {
-    return (
-      <div className="page">
-        <div className="blob blob-1" aria-hidden="true" />
-        <div className="blob blob-2" aria-hidden="true" />
-        <div className="blob blob-3" aria-hidden="true" />
-        <div className="blob blob-4" aria-hidden="true" />
-        <div className="blob blob-5" aria-hidden="true" />
-        <div className="blob blob-6" aria-hidden="true" />
-        <div className="blob blob-7" aria-hidden="true" />
-        <div className="blob blob-8" aria-hidden="true" />
-        <div className="blob blob-9" aria-hidden="true" />
-        <div className="blob blob-10" aria-hidden="true" />
-        <div className="blob blob-11" aria-hidden="true" />
-        <div className="blob blob-12" aria-hidden="true" />
-        <div className="blob blob-13" aria-hidden="true" />
-        <div className="blob blob-14" aria-hidden="true" />
-        <div className="blob blob-15" aria-hidden="true" />
-        <div className="blob blob-16" aria-hidden="true" />
-        <div className="blob blob-17" aria-hidden="true" />
-        <div className="blob blob-18" aria-hidden="true" />
-        <div className="blob blob-19" aria-hidden="true" />
-        <div className="blob blob-20" aria-hidden="true" />
-        <div className="blob blob-21" aria-hidden="true" />
-        <div className="blob blob-pulse blob-pulse-1" aria-hidden="true" />
-        <div className="blob blob-pulse blob-pulse-2" aria-hidden="true" />
-        <WorkflowConnectors />
-        <main className="card success-container">
-          <div className="success-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
-          <h2 className="success-title">{content.successTitle}</h2>
-          <p className="success-message">{content.successMessage}</p>
-        </main>
-        <footer className="footer"><p>{content.footerText}</p></footer>
-      </div>
-    );
-  }
-
   return (
     <div className="page">
-      <div className="blob blob-1" aria-hidden="true" />
-      <div className="blob blob-2" aria-hidden="true" />
-      <div className="blob blob-3" aria-hidden="true" />
-      <div className="blob blob-4" aria-hidden="true" />
-      <div className="blob blob-5" aria-hidden="true" />
-      <div className="blob blob-6" aria-hidden="true" />
-      <div className="blob blob-7" aria-hidden="true" />
-      <div className="blob blob-8" aria-hidden="true" />
-      <div className="blob blob-9" aria-hidden="true" />
-      <div className="blob blob-10" aria-hidden="true" />
-      <div className="blob blob-11" aria-hidden="true" />
-      <div className="blob blob-12" aria-hidden="true" />
-      <div className="blob blob-13" aria-hidden="true" />
-      <div className="blob blob-14" aria-hidden="true" />
-      <div className="blob blob-15" aria-hidden="true" />
-      <div className="blob blob-16" aria-hidden="true" />
-      <div className="blob blob-17" aria-hidden="true" />
-      <div className="blob blob-18" aria-hidden="true" />
-      <div className="blob blob-19" aria-hidden="true" />
-      <div className="blob blob-20" aria-hidden="true" />
-      <div className="blob blob-21" aria-hidden="true" />
+      {Array.from({ length: 21 }, (_, i) => (
+        <div key={i + 1} className={`blob blob-${i + 1}`} aria-hidden="true" />
+      ))}
       <div className="blob blob-pulse blob-pulse-1" aria-hidden="true" />
       <div className="blob blob-pulse blob-pulse-2" aria-hidden="true" />
       <WorkflowConnectors />
 
-      {/* Page-level branding above the card */}
-      <div className="page-brand">
-        <div className="page-logo">
-          {/* Receipt / till icon */}
-          <svg viewBox="0 0 28 32" fill="none" aria-hidden="true" width="32" height="36">
-            <path d="M4 0H24C25.1 0 26 0.9 26 2V28L23 25.5L20 28L17 25.5L14 28L11 25.5L8 28L5 25.5L2 28V2C2 0.9 2.9 0 4 0Z" fill="#C4623A"/>
-            <rect x="6" y="7" width="16" height="1.8" rx="0.9" fill="white" opacity="0.85"/>
-            <rect x="6" y="11.5" width="11" height="1.8" rx="0.9" fill="white" opacity="0.75"/>
-            <rect x="6" y="16" width="14" height="1.8" rx="0.9" fill="white" opacity="0.75"/>
-            <rect x="6" y="20.5" width="9" height="1.8" rx="0.9" fill="white" opacity="0.55"/>
-          </svg>
-          <div className="page-logo-text">
-            <span className="page-logo-name">{content.logoText}</span>
-            <span className="page-logo-tagline">Local Business Intelligence</span>
+      <div className="main-wrapper">
+        <div className="main-card">
+
+          {/* ── LEFT COLUMN ── */}
+          <div className="left-col">
+
+            <div className="brand-row">
+              <svg viewBox="0 0 28 32" fill="none" aria-hidden="true" width="38" height="43" className="brand-icon">
+                <path d="M4 0H24C25.1 0 26 0.9 26 2V28L23 25.5L20 28L17 25.5L14 28L11 25.5L8 28L5 25.5L2 28V2C2 0.9 2.9 0 4 0Z" fill="#C4623A"/>
+                <rect x="6" y="7" width="16" height="1.8" rx="0.9" fill="white" opacity="0.85"/>
+                <rect x="6" y="11.5" width="11" height="1.8" rx="0.9" fill="white" opacity="0.75"/>
+                <rect x="6" y="16" width="14" height="1.8" rx="0.9" fill="white" opacity="0.75"/>
+                <rect x="6" y="20.5" width="9" height="1.8" rx="0.9" fill="white" opacity="0.55"/>
+              </svg>
+              <div className="brand-text">
+                <span className="brand-name">The Weekly Till</span>
+                <span className="brand-pill">LOCAL BUSINESS INTELLIGENCE</span>
+              </div>
+            </div>
+
+            <div className="stats-badge">
+              <span className="live-dot" aria-hidden="true" />
+              <strong>3,457</strong> local business owners already subscribed
+            </div>
+
+            <h1 className="headline">
+              Fix the workflow{' '}
+              <span className="headline-highlight">draining your time.</span>
+            </h1>
+
+            <p className="subhead">✨ Your first plan arrives immediately.</p>
+
+            <p className="description">
+              Choose your business type and the task costing the most hours. We'll send one practical setup you can use right away. After that, you'll get one short Tuesday email with fresh ideas for the same area.
+            </p>
+
+            <ul className="feature-list" aria-label="What you get">
+              <li><i className="fas fa-bolt" aria-hidden="true" /><span>Practical automation — use it today</span></li>
+              <li><i className="fas fa-envelope-open-text" aria-hidden="true" /><span>Weekly Tuesday email: bite-sized &amp; actionable</span></li>
+              <li><i className="fas fa-mobile-alt" aria-hidden="true" /><span>Text reminders &amp; mobile tips (opt-out anytime)</span></li>
+              <li><i className="fas fa-chart-simple" aria-hidden="true" /><span>Tailored to your business bottleneck</span></li>
+            </ul>
+
+            <div className="trust-note">
+              <i className="fas fa-clock" aria-hidden="true" />
+              Cancel anytime. Your first blueprint is delivered the moment you subscribe.
+            </div>
           </div>
-        </div>
-        <div className="live-counter" role="status" aria-live="polite">
-          <span className="live-dot" aria-hidden="true" />
-          <span><strong>3,457</strong> local business owners already subscribed</span>
+
+          {/* ── RIGHT COLUMN ── */}
+          <div className="right-col">
+            <div className="form-card">
+              <div className="form-header">
+                <i className="fas fa-gem" aria-hidden="true" />
+                Get your automation blueprint — 100% free
+              </div>
+
+              <form onSubmit={handleSubmit} aria-label="Subscribe to The Weekly Till" noValidate>
+                <div className="form-group">
+                  <label htmlFor="email" className="label">
+                    <i className="fas fa-envelope" aria-hidden="true" /> Your work email
+                  </label>
+                  <input type="email" id="email" className="input" placeholder="you@yourbusiness.com"
+                    value={email} onChange={e => setEmail(e.target.value)}
+                    disabled={isSubmitting || isSubmitted} autoComplete="email" />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="phone" className="label">
+                    <i className="fas fa-phone-alt" aria-hidden="true" /> Mobile for text reminders
+                  </label>
+                  <input type="tel" id="phone" className="input" placeholder="(555) 000-0000"
+                    value={phone} onChange={e => setPhone(e.target.value)}
+                    disabled={isSubmitting || isSubmitted} autoComplete="tel" />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="businessType" className="label">
+                    <i className="fas fa-store" aria-hidden="true" /> Your type of business
+                  </label>
+                  <div className="select-wrapper">
+                    <select id="businessType" className="select" value={businessType}
+                      onChange={e => setBusinessType(e.target.value)}
+                      disabled={isSubmitting || isSubmitted}>
+                      <option value="" disabled>{content.businessTypePlaceholder}</option>
+                      {businessTypes.slice(1).map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                    </select>
+                    <div className="select-arrow"><i className="fas fa-chevron-down" aria-hidden="true" /></div>
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="painPoint" className="label">
+                    <i className="fas fa-hourglass-half" aria-hidden="true" /> What costs you the most time right now?
+                  </label>
+                  <div className="select-wrapper">
+                    <select id="painPoint" className="select" value={painPoint}
+                      onChange={e => setPainPoint(e.target.value)}
+                      disabled={isSubmitting || isSubmitted}>
+                      <option value="" disabled>{content.painPointPlaceholder}</option>
+                      {painPoints.slice(1).map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                    </select>
+                    <div className="select-arrow"><i className="fas fa-chevron-down" aria-hidden="true" /></div>
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="source" className="label">
+                    <i className="fas fa-magnifying-glass" aria-hidden="true" /> Where did you find us?
+                  </label>
+                  <div className="select-wrapper">
+                    <select id="source" className="select" value={source}
+                      onChange={e => setSource(e.target.value)}
+                      disabled={isSubmitting || isSubmitted}>
+                      <option value="" disabled>{content.sourcePlaceholder}</option>
+                      {referralSources.slice(1).map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                    </select>
+                    <div className="select-arrow"><i className="fas fa-chevron-down" aria-hidden="true" /></div>
+                  </div>
+                </div>
+
+                <button type="submit" className="submit-btn" disabled={isSubmitting || isSubmitted}>
+                  {isSubmitting ? (
+                    <><span className="spinner" role="status" aria-label="Sending" /> Sending...</>
+                  ) : isSubmitted ? (
+                    <><i className="fas fa-check" aria-hidden="true" /> Blueprint sent!</>
+                  ) : (
+                    <>Send my automation blueprint <i className="fas fa-arrow-right" aria-hidden="true" /></>
+                  )}
+                </button>
+
+                <p className="legal-note">
+                  <i className="fas fa-shield-alt" aria-hidden="true" />
+                  {' '}By signing up, you agree to receive occasional texts &amp; emails. Msg &amp; data rates may apply. Opt out anytime.
+                </p>
+
+                {error && (
+                  <div className="msg msg-error" role="alert">
+                    <i className="fas fa-circle-exclamation" aria-hidden="true" /> {error}
+                  </div>
+                )}
+                {isSubmitted && (
+                  <div className="msg msg-success" role="status">
+                    🎉 Done! Your automation blueprint is on its way to <strong>{email}</strong> &amp; via SMS to <strong>{phone}</strong>. Check your inbox (and spam folder, just in case). Your first Tuesday tip arrives next week.
+                  </div>
+                )}
+              </form>
+            </div>
+          </div>
+
         </div>
       </div>
 
-      <main className="card">
-
-        <section aria-label="Newsletter introduction">
-          <h1 className="headline">
-            <span className="headline-normal">{content.headlineStart}</span>
-            <span className="headline-accent">{content.headlineAccent}</span>
-          </h1>
-          <p className="subheadline">{content.subheadline}</p>
-        </section>
-
-        <form className="form" onSubmit={handleSubmit} aria-label="Subscribe to The Weekly Till" noValidate>
-          <div className="form-group">
-            <label htmlFor="email" className="label">Your work email</label>
-            <input type="email" id="email" className="input" placeholder="you@yourbusiness.com"
-              value={email} onChange={(e) => setEmail(e.target.value)}
-              disabled={isSubmitting} aria-required="true" autoComplete="email" />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="phone" className="label">Mobile for text reminders
-            </label>
-            <input type="tel" id="phone" className="input" placeholder="(555) 000-0000"
-              value={phone} onChange={(e) => setPhone(e.target.value)}
-              disabled={isSubmitting} autoComplete="tel" />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="businessType" className="label">Your type of business</label>
-            <div className="select-wrapper">
-              <select id="businessType" className="select" value={businessType}
-                onChange={(e) => setBusinessType(e.target.value)}
-                disabled={isSubmitting} aria-required="true">
-                {businessTypes.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
-              </select>
-              <div className="select-arrow"><ChevronDown /></div>
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="painPoint" className="label">What costs you the most time right now?</label>
-            <div className="select-wrapper">
-              <select id="painPoint" className="select" value={painPoint}
-                onChange={(e) => setPainPoint(e.target.value)}
-                disabled={isSubmitting} aria-required="true">
-                {painPoints.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
-              </select>
-              <div className="select-arrow"><ChevronDown /></div>
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="source" className="label">Where did you find us?</label>
-            <div className="select-wrapper">
-              <select id="source" className="select" value={source}
-                onChange={(e) => setSource(e.target.value)}
-                disabled={isSubmitting} aria-required="true">
-                {referralSources.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
-              </select>
-              <div className="select-arrow"><ChevronDown /></div>
-            </div>
-          </div>
-
-          {error && (
-            <div className="error-message" role="alert">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                <circle cx="12" cy="12" r="10" />
-                <line x1="12" y1="8" x2="12" y2="12" />
-                <line x1="12" y1="16" x2="12.01" y2="16" />
-              </svg>
-              {error}
-            </div>
-          )}
-
-          <button type="submit" className="submit-btn" disabled={isSubmitting}>
-            {isSubmitting ? (
-              <><span className="spinner" role="status" aria-label="Sending" />{content.buttonLoadingText}</>
-            ) : (
-              <>{content.buttonText}<ArrowRight /></>
-            )}
-          </button>
-
-          <p className="privacy-note">{content.privacyNote}</p>
-        </form>
-
-        {/* Testimonials */}
-        <section className="testimonials" aria-label="What readers are saying">
+      <section className="testimonials-section" aria-label="What readers are saying">
+        <p className="testimonials-label">What our readers say</p>
+        <div className="testimonials-grid">
           {testimonials.map((t, i) => (
-            <blockquote className="testimonial" key={i}>
-              <span className="testimonial-mark" aria-hidden="true">"</span>
-              <p className="testimonial-text">{t.quote}</p>
-              <footer className="testimonial-author">
-                <span className="testimonial-dash" aria-hidden="true">—</span>
-                <cite>
-                  <span className="testimonial-name">{t.name}</span>
-                  <span className="testimonial-biz">{`, ${t.role}, ${t.city}`}</span>
-                </cite>
+            <blockquote className="tcard" key={i}>
+              <span className="tcard-quote" aria-hidden="true">"</span>
+              <p className="tcard-text">{t.quote}</p>
+              <footer className="tcard-author">
+                <span aria-hidden="true">—</span>{' '}
+                <cite><strong>{t.name}</strong>, {t.role}, {t.city}</cite>
               </footer>
             </blockquote>
           ))}
-        </section>
-      </main>
+        </div>
+      </section>
 
       <footer className="footer">
-        <p>{content.footerText}</p>
+        <p>
+          © 2026 The Weekly Till — intelligence for main street entrepreneurs
+          {' '}&nbsp;•&nbsp;{' '}
+          <a href="#" className="footer-link">Privacy</a>
+          {' '}&nbsp;•&nbsp;{' '}
+          <a href="#" className="footer-link">Unsubscribe preferences</a>
+        </p>
       </footer>
     </div>
   );
