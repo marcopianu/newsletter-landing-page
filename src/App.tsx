@@ -150,101 +150,120 @@ function App() {
           {/* ── RIGHT COLUMN ── */}
           <div className="right-col">
             <div className="form-card">
-              <div className="form-header">
-                <i className="fas fa-gem" aria-hidden="true" />
-                Get your automation blueprint — 100% free
-              </div>
-
-              <form onSubmit={handleSubmit} aria-label="Subscribe to The Weekly Till" noValidate>
-                <div className="form-group">
-                  <label htmlFor="email" className="label">
-                    <i className="fas fa-envelope" aria-hidden="true" /> Your work email
-                  </label>
-                  <input type="email" id="email" className="input" placeholder="you@yourbusiness.com"
-                    value={email} onChange={e => setEmail(e.target.value)}
-                    disabled={isSubmitting || isSubmitted} autoComplete="email" />
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="phone" className="label">
-                    <i className="fas fa-phone-alt" aria-hidden="true" /> Mobile for text reminders
-                  </label>
-                  <input type="tel" id="phone" className="input" placeholder="(555) 000-0000"
-                    value={phone} onChange={e => setPhone(e.target.value)}
-                    disabled={isSubmitting || isSubmitted} autoComplete="tel" />
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="businessType" className="label">
-                    <i className="fas fa-store" aria-hidden="true" /> Your type of business
-                  </label>
-                  <div className="select-wrapper">
-                    <select id="businessType" className="select" value={businessType}
-                      onChange={e => setBusinessType(e.target.value)}
-                      disabled={isSubmitting || isSubmitted}>
-                      <option value="" disabled>{content.businessTypePlaceholder}</option>
-                      {businessTypes.slice(1).map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                    </select>
-                    <div className="select-arrow"><i className="fas fa-chevron-down" aria-hidden="true" /></div>
+              {isSubmitted ? (
+                <div className="success-screen" role="status">
+                  <div className="success-icon-wrap">
+                    <i className="fas fa-check" aria-hidden="true" />
                   </div>
+                  <h2 className="success-title">You're in!</h2>
+                  <p className="success-subtitle">Your automation blueprint is on its way.</p>
+                  <div className="success-details">
+                    <div className="success-detail-row">
+                      <i className="fas fa-envelope" aria-hidden="true" />
+                      <span>Sent to <strong>{email}</strong></span>
+                    </div>
+                    <div className="success-detail-row">
+                      <i className="fas fa-mobile-alt" aria-hidden="true" />
+                      <span>SMS reminders to <strong>{phone}</strong></span>
+                    </div>
+                  </div>
+                  <p className="success-hint">
+                    Check your inbox — and spam folder, just in case.<br />
+                    Your first Tuesday tip arrives next week.
+                  </p>
                 </div>
-
-                <div className="form-group">
-                  <label htmlFor="painPoint" className="label">
-                    <i className="fas fa-hourglass-half" aria-hidden="true" /> What costs you the most time right now?
-                  </label>
-                  <div className="select-wrapper">
-                    <select id="painPoint" className="select" value={painPoint}
-                      onChange={e => setPainPoint(e.target.value)}
-                      disabled={isSubmitting || isSubmitted}>
-                      <option value="" disabled>{content.painPointPlaceholder}</option>
-                      {painPoints.slice(1).map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                    </select>
-                    <div className="select-arrow"><i className="fas fa-chevron-down" aria-hidden="true" /></div>
+              ) : (
+                <>
+                  <div className="form-header">
+                    <i className="fas fa-gem" aria-hidden="true" />
+                    Get your automation blueprint — 100% free
                   </div>
-                </div>
 
-                <div className="form-group">
-                  <label htmlFor="source" className="label">
-                    <i className="fas fa-magnifying-glass" aria-hidden="true" /> Where did you find us?
-                  </label>
-                  <div className="select-wrapper">
-                    <select id="source" className="select" value={source}
-                      onChange={e => setSource(e.target.value)}
-                      disabled={isSubmitting || isSubmitted}>
-                      <option value="" disabled>{content.sourcePlaceholder}</option>
-                      {referralSources.slice(1).map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                    </select>
-                    <div className="select-arrow"><i className="fas fa-chevron-down" aria-hidden="true" /></div>
-                  </div>
-                </div>
+                  <form onSubmit={handleSubmit} aria-label="Subscribe to The Weekly Till" noValidate>
+                    <div className="form-group">
+                      <label htmlFor="email" className="label">
+                        <i className="fas fa-envelope" aria-hidden="true" /> Your work email
+                      </label>
+                      <input type="email" id="email" className="input" placeholder="you@yourbusiness.com"
+                        value={email} onChange={e => setEmail(e.target.value)}
+                        disabled={isSubmitting} autoComplete="email" />
+                    </div>
 
-                <button type="submit" className="submit-btn" disabled={isSubmitting || isSubmitted}>
-                  {isSubmitting ? (
-                    <><span className="spinner" role="status" aria-label="Sending" /> Sending...</>
-                  ) : isSubmitted ? (
-                    <><i className="fas fa-check" aria-hidden="true" /> Blueprint sent!</>
-                  ) : (
-                    <>Send my automation blueprint <i className="fas fa-arrow-right" aria-hidden="true" /></>
-                  )}
-                </button>
+                    <div className="form-group">
+                      <label htmlFor="phone" className="label">
+                        <i className="fas fa-phone-alt" aria-hidden="true" /> Mobile for text reminders
+                      </label>
+                      <input type="tel" id="phone" className="input" placeholder="(555) 000-0000"
+                        value={phone} onChange={e => setPhone(e.target.value)}
+                        disabled={isSubmitting} autoComplete="tel" />
+                    </div>
 
-                <p className="legal-note">
-                  <i className="fas fa-shield-alt" aria-hidden="true" />
-                  {' '}By signing up, you agree to receive occasional texts &amp; emails. Msg &amp; data rates may apply. Opt out anytime.
-                </p>
+                    <div className="form-group">
+                      <label htmlFor="businessType" className="label">
+                        <i className="fas fa-store" aria-hidden="true" /> Your type of business
+                      </label>
+                      <div className="select-wrapper">
+                        <select id="businessType" className="select" value={businessType}
+                          onChange={e => setBusinessType(e.target.value)}
+                          disabled={isSubmitting}>
+                          <option value="" disabled>{content.businessTypePlaceholder}</option>
+                          {businessTypes.slice(1).map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                        </select>
+                        <div className="select-arrow"><i className="fas fa-chevron-down" aria-hidden="true" /></div>
+                      </div>
+                    </div>
 
-                {error && (
-                  <div className="msg msg-error" role="alert">
-                    <i className="fas fa-circle-exclamation" aria-hidden="true" /> {error}
-                  </div>
-                )}
-                {isSubmitted && (
-                  <div className="msg msg-success" role="status">
-                    🎉 Done! Your automation blueprint is on its way to <strong>{email}</strong> &amp; via SMS to <strong>{phone}</strong>. Check your inbox (and spam folder, just in case). Your first Tuesday tip arrives next week.
-                  </div>
-                )}
-              </form>
+                    <div className="form-group">
+                      <label htmlFor="painPoint" className="label">
+                        <i className="fas fa-hourglass-half" aria-hidden="true" /> What costs you the most time right now?
+                      </label>
+                      <div className="select-wrapper">
+                        <select id="painPoint" className="select" value={painPoint}
+                          onChange={e => setPainPoint(e.target.value)}
+                          disabled={isSubmitting}>
+                          <option value="" disabled>{content.painPointPlaceholder}</option>
+                          {painPoints.slice(1).map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                        </select>
+                        <div className="select-arrow"><i className="fas fa-chevron-down" aria-hidden="true" /></div>
+                      </div>
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="source" className="label">
+                        <i className="fas fa-magnifying-glass" aria-hidden="true" /> Where did you find us?
+                      </label>
+                      <div className="select-wrapper">
+                        <select id="source" className="select" value={source}
+                          onChange={e => setSource(e.target.value)}
+                          disabled={isSubmitting}>
+                          <option value="" disabled>{content.sourcePlaceholder}</option>
+                          {referralSources.slice(1).map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                        </select>
+                        <div className="select-arrow"><i className="fas fa-chevron-down" aria-hidden="true" /></div>
+                      </div>
+                    </div>
+
+                    <button type="submit" className="submit-btn" disabled={isSubmitting}>
+                      {isSubmitting ? (
+                        <><span className="spinner" role="status" aria-label="Sending" /> Sending...</>
+                      ) : (
+                        <>Send my automation blueprint <i className="fas fa-arrow-right" aria-hidden="true" /></>
+                      )}
+                    </button>
+
+                    <p className="legal-note">
+                      <i className="fas fa-shield-alt" aria-hidden="true" />
+                      {' '}By signing up, you agree to receive occasional texts &amp; emails. Msg &amp; data rates may apply. Opt out anytime.
+                    </p>
+
+                    {error && (
+                      <div className="msg msg-error" role="alert">
+                        <i className="fas fa-circle-exclamation" aria-hidden="true" /> {error}
+                      </div>
+                    )}
+                  </form>
+                </>
+              )}
             </div>
           </div>
 
